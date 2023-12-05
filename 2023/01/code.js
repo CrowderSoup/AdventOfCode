@@ -1,25 +1,24 @@
-const fs = require("fs");
+import fs from "fs";
 
-const rawInput = fs.readFileSync("./input.txt").toString();
-const input = rawInput.split("\n");
+const input = fs.readFileSync("./input.txt").toString().trim().split("\n");
 
-// Some test input
+// Some test input: total should be 602
 /*
 const input = [
-  "two1nine",
-  "eightwothree",
-  "abcone2threexyz",
-  "xtwone3four",
-  "4nineeightseven2",
-  "zoneight234",
-  "7pqrstsixteen",
-  "sevenine",
-  "eighthree",
-  "five",
-  "eightwo"
+  "two1nine", // 29
+  "eightwothree", // 83
+  "abcone2threexyz", // 13
+  "xtwone3four", // 24
+  "4nineeightseven2", // 42
+  "zoneight234", // 14
+  "7pqrstsixteen", // 76
+  "sevenine", // 79
+  "eighthree", // 83
+  "five", // 55
+  "eightwo", // 82
+  "ltpzstwo78fivefourstwox", // 22
 ];
 */
-
 
 const wordNumbers = {
   "one": 1,
@@ -34,18 +33,15 @@ const wordNumbers = {
 };
 
 const numbers = input.map((value) => {
-  if (!value) {
-    return 0;
-  }
-
   const unorderedIndexes = {};
 
   // Get the indexes of the word numbers
   Object.keys(wordNumbers).forEach(key => {
-    const index = value.indexOf(key);
-
-    if (index >= 0) {
-      unorderedIndexes[index] = wordNumbers[key];
+    const indecies = [...value.matchAll(new RegExp(key, 'gi'))].map(a => a.index);
+    if (indecies.length > 0) {
+      indecies.forEach((i) => {
+        unorderedIndexes[i] = wordNumbers[key];
+      });
     }
   });
 
@@ -67,10 +63,6 @@ const numbers = input.map((value) => {
   const lastNum = Object.values(sortedIndexes)[Object.keys(sortedIndexes).length - 1];
 
   const result = parseInt(`${firstNum}${lastNum}`);
-
-  if (!result) {
-    return 0;
-  }
 
   return result;
 });
